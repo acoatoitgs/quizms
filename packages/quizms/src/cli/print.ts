@@ -50,7 +50,6 @@ export default async function print(options: PrintOptions) {
           pages.map((page) => [page, "virtual:quizms-entry?virtual:quizms-print-entry"]),
         ),
       },
-      minify: false,
     },
     plugins: [printEntry(contests, variantConfigs)],
     logLevel: "info",
@@ -121,11 +120,13 @@ import { PrintProvider, PrintRoutes } from "@olinfo/quizms/print";
 import { Route } from "wouter";
 
 ${contestConfigs
-  .flatMap((contest) =>
-    contest.header
-      ? [`import ${reactComponentCase(contest.id)}Header from "/${contest.header}";`]
-      : [],
-  )
+  .flatMap((contest) => {
+    const imports = [`import ${reactComponentCase(contest.id)} from "/${contest.entry}";`];
+    if (contest.header) {
+      imports.push(`import ${reactComponentCase(contest.id)}Header from "/${contest.header}";`);
+    }
+    return imports;
+  })
   .join("\n")}
 
 export default function createPrintEntry() {
@@ -137,6 +138,7 @@ export default function createPrintEntry() {
             <Route path="/${contest.id}">
               <PrintProvider contest={${JSON.stringify(contest)}}>
                 ${contest.header && `<${reactComponentCase(contest.id)}Header />`}
+                <${reactComponentCase(contest.id)} />
               </PrintProvider>
             </Route>`,
         )
@@ -155,7 +157,6 @@ function createPrintServer(buildDir: string) {
 
   fastify.register(fastifyStatic, {
     root: buildDir,
-    extensions: ["html"],
   } as RegisterOptions & FastifyStaticOptions);
 
   fastify.register(fastifyStatic, {

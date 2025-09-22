@@ -7,8 +7,6 @@ import type { VariantsConfig } from "~/models/variants-config";
 import { StudentProvider } from "~/web/student/provider";
 import { UserDataForm } from "~/web/student/user-data-form";
 
-import { PrintStatement } from "./statement";
-
 export function PrintRoutes({
   contests,
   children,
@@ -96,7 +94,6 @@ export function PrintProvider({ contest, children }: { contest: Contest; childre
       setStudent={() => {}}>
       <UserDataForm />
       {children}
-      <PrintStatement />
     </StudentProvider>
   );
 }
