@@ -1,4 +1,4 @@
-import { forwardRef, type ReactNode, type Ref, useRef } from "react";
+import { forwardRef, type ReactNode, type Ref, useEffect, useRef, useState } from "react";
 
 import {
   Button,
@@ -28,12 +28,36 @@ export function StudentLayout({ children }: { children: ReactNode }) {
 
   const completedRef = useRef<HTMLDialogElement>(null);
   const submitRef = useRef<HTMLDialogElement>(null);
+  const [isShowingFullscreenButton, setFullscreenButtonVisibility] = useState(true);
 
-  const { contest, student, schema, reset, participation, terminated } = useStudent();
+  const { contest, student, schema, reset, participation, terminated, logout } = useStudent();
 
   const answered = sumBy(Object.values(student.answers ?? {}), (s) => Number(s === 0 || !!s));
   const total = Math.max(Object.keys(schema).length, 1);
   const progress = Math.round((answered / total) * 100);
+
+  // Log user out when it exits the full screen
+  useEffect(() => {
+    console.log("StudentLayout mounted - Event listener attached");
+    const handleFullscreenChange = () => {
+      console.log("Fullscreen event fired!", document.fullscreenElement);
+      if (document.fullscreenElement) {
+        console.log("Entered fullscreen");
+        //Hide fullscreen button
+        setFullscreenButtonVisibility(false);
+      } else {
+        console.log("Exited fullscreen -> Logging out");
+        //Show fullscreen button
+        setFullscreenButtonVisibility(true);
+        logout?.();
+      }
+    };
+    document.documentElement.requestFullscreen().catch((e) => console.error(e));
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    //Remove event listener
+    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+  }, [logout]);
 
   const submit = async () => {
     const modal = submitRef.current;
@@ -59,6 +83,15 @@ export function StudentLayout({ children }: { children: ReactNode }) {
         </NavbarBrand>
         <NavbarContent>
           <div className="flex items-center gap-2">
+            {isShowingFullscreenButton && (
+              <Button
+                className="btn-secondary btn-sm fullscreen-button"
+                onClick={() =>
+                  document.documentElement.requestFullscreen().catch((e) => console.error(e))
+                }>
+                Torna a schermo intero
+              </Button>
+            )}
             <Progress className="hidden w-20 sm:block" percentage={progress}>
               {progress}%
             </Progress>

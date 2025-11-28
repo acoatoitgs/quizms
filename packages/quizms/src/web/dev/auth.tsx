@@ -69,13 +69,18 @@ export function DevProvider({ contest, children }: { contest: Contest; children:
     );
   }, [setStudent]);
 
+  const logout = useCallback(() => {
+    console.log("Logout function called!");
+  }, []);
+
   return (
     <StudentProvider
       contest={contest}
       participation={mockParticipation}
       student={student}
       setStudent={setStudent}
-      reset={reset}>
+      reset={reset}
+      logout={logout}>
       {children}
     </StudentProvider>
   );

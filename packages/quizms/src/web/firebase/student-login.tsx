@@ -182,6 +182,7 @@ function StudentInner({
   };
 
   const logout = async () => {
+    console.log("Logged out from firebase");
     await waitForPendingWrites(db);
     await signOut(getAuth(db.app));
     window.location.reload();
