@@ -29,7 +29,7 @@ export default function entry(): PluginOption {
         }
 
         return `\
-import createApp from "${entryId}";
+import createApp from "${entryId[0] === "&" ? entryId.slice(1) : entryId}";
 import "@olinfo/quizms/css";
 import "~/global.css";
 

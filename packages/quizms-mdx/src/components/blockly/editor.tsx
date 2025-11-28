@@ -11,7 +11,7 @@ export const Editor = forwardRef(function Editor(
       <iframe
         ref={ref}
         src="/__blockly_iframe.html"
-        className="size-full"
+        className="size-full iframe_blockly"
         title="Area di lavoro di Blockly"
         loading="lazy"
       />

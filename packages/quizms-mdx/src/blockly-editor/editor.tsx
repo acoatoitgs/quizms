@@ -51,7 +51,7 @@ export function BlocklyEditor() {
   useEffect(() => send({ cmd: "init" }), []);
   useEffect(() => document.documentElement.setAttribute("data-theme", "light"), []);
 
-  return <div className="!fixed !inset-0 [all:initial]" id={id} />;
+  return <div className="blockly-editor !fixed !inset-0 [all:initial]" id={id} />;
 }
 
 export type InitProps = {

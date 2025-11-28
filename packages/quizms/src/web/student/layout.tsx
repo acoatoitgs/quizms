@@ -19,6 +19,7 @@ import { FileChartColumn, LogOut, RotateCcw } from "lucide-react";
 
 import { calcProblemPoints, type Schema } from "~/models";
 import { ErrorBoundary, Progress, Prose, Timer, useMetadata } from "~/web/components";
+import { PageVisibilityListener } from "~/web/components/page-visibility-listener";
 
 import { useStudent } from "./context";
 
@@ -50,6 +51,8 @@ export function StudentLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
+      <PageVisibilityListener />
+
       <Navbar color="bg-base-300 text-base-content">
         <NavbarBrand>
           <div className="flex items-center h-full font-bold">{metadata.title}</div>

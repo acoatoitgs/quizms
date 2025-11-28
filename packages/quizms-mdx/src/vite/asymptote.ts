@@ -122,7 +122,7 @@ async function transformAsymptote(fileName: string, inject: string | null): Prom
       );
     }
   } catch (err: any) {
-    throw new Error(`Failed to compile asymptote:\n${err.stderr}`);
+    throw new Error(`Failed to compile asymptote:\n${err}`);
   }
 
   return readFile(svgFile, { encoding: "utf8" });

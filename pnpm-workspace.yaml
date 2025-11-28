@@ -1,7 +1,21 @@
 packages:
-  - 'packages/*'
-  - 'docs'
+  - packages/*
+  - docs
+
+ignoredBuiltDependencies:
+  - '@firebase/util'
+  - '@swc/core'
+  - esbuild
+  - protobufjs
+
 linkWorkspacePackages: true
 
 onlyBuiltDependencies:
   - sharp
+
+overrides:
+  '@olinfo/quizms': link:../../Library/pnpm/global/5/node_modules/@olinfo/quizms
+  '@olinfo/quizms-mdx': link:../../Library/pnpm/global/5/node_modules/@olinfo/quizms-mdx
+  quizms: link:../../Library/pnpm/global/5/node_modules/quizms
+  quizms-md: link:../../Library/pnpm/global/5/node_modules/quizms-md
+  quizms-mdx: link:../../Library/pnpm/global/5/node_modules/quizms-mdx
