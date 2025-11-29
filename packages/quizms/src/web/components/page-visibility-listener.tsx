@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef } from "react";
 
 import { Modal } from "@olinfo/react-components";
 
-const WARNING_DELAY_MS = 1000;
+const WARNING_DELAY_MS = 500;
 
-export function PageVisibilityListener() {
+export function PageVisibilityListener({ onWarning }: { onWarning?: () => void }) {
   const lastHidden = useRef<boolean | null>(null);
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const pendingTimerID = useRef<number | null>(null);
@@ -37,6 +37,7 @@ export function PageVisibilityListener() {
   }, []);
 
   const scheduleWarning = useCallback(() => {
+    onWarning?.();
     //  Clear any existing timer to avoid multiple warnings
     if (pendingTimerID.current) {
       clearTimeout(pendingTimerID.current);
@@ -48,7 +49,7 @@ export function PageVisibilityListener() {
     }, WARNING_DELAY_MS);
 
     pendingTimerID.current = timerId;
-  }, [openDialog]);
+  }, [openDialog, onWarning]);
 
   const cancelWarning = useCallback(() => {
     // Clear the timer and reset the ref

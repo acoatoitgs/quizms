@@ -1,4 +1,12 @@
-import { forwardRef, type ReactNode, type Ref, useEffect, useRef, useState } from "react";
+import {
+  forwardRef,
+  type ReactNode,
+  type Ref,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import {
   Button,
@@ -30,26 +38,34 @@ export function StudentLayout({ children }: { children: ReactNode }) {
   const submitRef = useRef<HTMLDialogElement>(null);
   const [isShowingFullscreenButton, setFullscreenButtonVisibility] = useState(true);
 
-  const { contest, student, schema, reset, participation, terminated, logout } = useStudent();
+  //add logout if necessary
+  const { contest, student, schema, reset, participation, terminated } = useStudent();
 
   const answered = sumBy(Object.values(student.answers ?? {}), (s) => Number(s === 0 || !!s));
   const total = Math.max(Object.keys(schema).length, 1);
   const progress = Math.round((answered / total) * 100);
 
+  const sendWarning = useCallback(() => {
+    //Call to firebase to log the violation
+
+    console.log("Sent warning (TODO)");
+  }, []);
+
   // Log user out when it exits the full screen
   useEffect(() => {
     console.log("StudentLayout mounted - Event listener attached");
     const handleFullscreenChange = () => {
-      console.log("Fullscreen event fired!", document.fullscreenElement);
+      // console.log("Fullscreen event fired!", document.fullscreenElement);
       if (document.fullscreenElement) {
         console.log("Entered fullscreen");
         //Hide fullscreen button
         setFullscreenButtonVisibility(false);
       } else {
-        console.log("Exited fullscreen -> Logging out");
+        console.log("Exited fullscreen");
         //Show fullscreen button
         setFullscreenButtonVisibility(true);
-        logout?.();
+        sendWarning();
+        // logout?.();
       }
     };
     document.documentElement.requestFullscreen().catch((e) => console.error(e));
@@ -57,7 +73,7 @@ export function StudentLayout({ children }: { children: ReactNode }) {
 
     //Remove event listener
     return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
-  }, [logout]);
+  }, [sendWarning]); //add [logout] if needed
 
   const submit = async () => {
     const modal = submitRef.current;
@@ -75,7 +91,7 @@ export function StudentLayout({ children }: { children: ReactNode }) {
 
   return (
     <>
-      <PageVisibilityListener />
+      <PageVisibilityListener onWarning={sendWarning} />
 
       <Navbar color="bg-base-300 text-base-content">
         <NavbarBrand>
